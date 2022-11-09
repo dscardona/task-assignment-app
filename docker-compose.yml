@@ -8,14 +8,41 @@ services:
       - .:/code
     ports:
       - 8000:8000
-    depends_on:
-      - db
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - DB_NAME=task_assignment_app
+      - DB_USER=postgres
+      - DB_PASSWORD=admin123
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DATABASE=postgres
+    depends_on:
+      - pg
+  pg:
+    container_name: pg_container
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_USER: postgres
+      - POSTGRES_PASSWORD: admin123
+      - POSTGRES_DB: task_assignment_app
+      - POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
 
-volumes:
-  postgres_data:
+  pgadmin:
+      container_name: pgadmin_container
+      image: dpage/pgadmin4:5.2
+      restart: always
+      environment:
+          PGADMIN_DEFAULT_EMAIL: admin@example.com
+          PGADMIN_DEFAULT_PASSWORD: admin123
+          PGADMIN_LISTEN_PORT: 5433
+          PGADMIN_CONFIG_SERVER_MODE: "False"
+          PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      ports:
+          - "5433:5433"
+      depends_on:
+          - pg

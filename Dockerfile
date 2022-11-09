@@ -17,7 +17,7 @@ WORKDIR /code
 # Copy project
 COPY . .
 
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /code
-USER appuser
+# RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /code
+# USER appuser
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi"]
+# CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app.wsgi"]
